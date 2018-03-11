@@ -1,5 +1,5 @@
 {
-    "name": "zzantares/proxmoxve",
+    "name": "sapistudio/proxmox",
     "type": "library",
     "description": "A simple PHP 5.4+ Proxmox API client.",
     "keywords": ["Proxmox", "API", "KVM", "OpenVZ", "Virtualization"],
