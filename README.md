@@ -3,8 +3,6 @@ Proxmox API Client
 
 This **PHP 5.4+** library allows you to interact with your Proxmox server via API.
 
-> If you find any errors, typos or you detect that something is not working as expected please open an [issue](https://github.com/ZzAntares/ProxmoxVE/issues/new) or tweetme [@ZzAntares](https://twitter.com/ZzAntares). I'll try to release a fix asap.
-
 Installation
 ------------
 
