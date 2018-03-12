@@ -6,6 +6,7 @@ class Handler
     const AUTH_COOKIE       = 'PVEAuthCookie';
     const AUTH_TOKEN        = 'CSRFPreventionToken';
     const GLOBALIZE_NAME    = 'CSRFPreventionToken';
+    
     private static $requestCookies;
     private $credentials;
     private $responseType;
@@ -48,7 +49,7 @@ class Handler
      * 
      * @return
      */
-    public function __construct($credentials,$responseType = 'array',$httpClient = null){
+    public function __construct($credentials,$responseType = 'object',$httpClient = null){
         $this->globalise();
         $this->setHttpClient($httpClient);
         $this->setCredentials($credentials);
@@ -135,6 +136,8 @@ class Handler
                 return 'data:image/png;base64,' . $base64;
                 break;
             case 'object':
+                return json_decode($response->getBody()->getContents());
+                break;
             case 'array':
                 return json_decode($response->getBody()->getContents(),true);
                 break;
