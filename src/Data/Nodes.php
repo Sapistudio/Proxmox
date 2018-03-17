@@ -24,6 +24,18 @@ class Nodes extends \SapiStudio\Proxmox\Request
       return self::Request("/nodes/$node/qemu");
   }
   
+  
+    /**
+     * Nodes::qemuCreate()
+     * 
+     * @return
+     */
+    public function qemuCreate($data = [])
+    {
+        $fields = ['vmid', 'name', 'ostype' => 'win10', 'ide2' => 'local:iso/win_10_64bit_trial_90days.iso,media=cdrom', 'ide0' => 'local-lvm:32', 'sockets' => 2, 'cores', 'numa' => 0, 'memory', 'net0' => 'e1000,bridge=vmbr0,tag=70', 'scsihw' => 'virtio-scsi-pci'];
+        return self::Request("/nodes/$node/qemu", $data, "POST");
+    }
+    
   /**
    * Nodes::Tasks()
    * 
