@@ -93,10 +93,10 @@ class Handler
                 $response = $this->httpClient->post($url,$this->buildHttpOptions(['form_params' => $params]));
                 break;
             case 'PUT':
-                $response = $this->httpClient->put($url,$this->buildHttpOptions(['body' => $params]));
+                $response = $this->httpClient->put($url,$this->buildHttpOptions(['form_params' => $params]));
                 break;
             case 'DELETE':
-                $response = $this->httpClient->delete($url,$this->buildHttpOptions(['body' => $params]));
+                $response = $this->httpClient->delete($url,$this->buildHttpOptions(['form_params' => $params]));
                 break;
             default:
                 throw new \Exception("HTTP Request method {$method} not allowed.");
