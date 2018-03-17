@@ -4,16 +4,31 @@ namespace SapiStudio\Proxmox\Data;
 
 class Nodes extends \SapiStudio\Proxmox\Request
 {
+  /**
+   * Nodes::listNodes()
+   * 
+   * @return
+   */
   public function listNodes()
   {
       return self::Request("/nodes");
   }
   
+  /**
+   * Nodes::listNodeQemus()
+   * 
+   * @return
+   */
   public function listNodeQemus($node)
   {
       return self::Request("/nodes/$node/qemu");
   }
   
+  /**
+   * Nodes::Tasks()
+   * 
+   * @return
+   */
   public function Tasks($node, $errors = null, $limit = null, $vmid = null, $start = null)
   {
       $optional['errors']  = !empty($errors) ? $errors : false;
@@ -23,16 +38,31 @@ class Nodes extends \SapiStudio\Proxmox\Request
       return self::Request("/nodes/$node/tasks", $optional);
   }
   
+  /**
+   * Nodes::tasksUpid()
+   * 
+   * @return
+   */
   public function tasksUpid($node, $upid)
   {
       return self::Request("/nodes/$node/tasks/$upid");
   }
   
+  /**
+   * Nodes::tasksStop()
+   * 
+   * @return
+   */
   public function tasksStop($node, $upid)
   {
       return self::Request("/nodes/$node/tasks/$upid", null, "DELETE");
   }
   
+  /**
+   * Nodes::tasksLog()
+   * 
+   * @return
+   */
   public function tasksLog($node, $upid, $limit = null, $start = null)
   {
       $optional['limit']   = !empty($limit) ? $limit : null;
@@ -40,6 +70,11 @@ class Nodes extends \SapiStudio\Proxmox\Request
       return self::Request("/nodes/$node/tasks/$upid/log", $optional);
   }
   
+  /**
+   * Nodes::tasksStatus()
+   * 
+   * @return
+   */
   public function tasksStatus($node, $upid)
   {
       return self::Request("/nodes/$node/tasks/$upid/status");
