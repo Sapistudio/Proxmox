@@ -7,24 +7,17 @@ class Qemu extends \SapiStudio\Proxmox\Request
     private $virtualMachineId   = null;
     private $nodeId             = null;
     
-    /**
-     * Qemu::setVmId()
-     * 
-     * @return
-     */
-    public function setVmId($vmid = 0){
-        $this->virtualMachineId = $vmid;
-        return $this;
-    }
     
     /**
-     * Qemu::setNodeId()
-     * 
-     * @return
+     * Qemu::__construct()
      */
-    public function setNodeId($nodeId = 0){
-        $this->nodeId = $nodeId;
-        return $this;
+    public function __construct($nodeId = null,$vmid = null)
+    {
+        if(!$nodeId || !$vmid){
+            throw new \Exception('Invalid Qemu constructor');
+        }
+        $this->virtualMachineId = $vmid;
+        $this->nodeId           = $nodeId;
     }
     
     /**
@@ -32,9 +25,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuVmid($node, $vmid)
+    public function qemuVmid()
     {
-        return self::Request("/nodes/$node/qemu/$vmid");
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId");
     }
 
     /**
@@ -42,9 +35,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuStatus($node, $vmid)
+    public function qemuStatus()
     {
-        return self::Request("/nodes/$node/qemu/$vmid/status");
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status");
     }
 
     /**
@@ -52,9 +45,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuCurrent($node, $vmid)
+    public function qemuCurrent()
     {
-        return self::Request("/nodes/$node/qemu/$vmid/status/current");
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/current");
     }
 
     /**
@@ -62,10 +55,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuRrddata($node, $vmid, $timeframe = null)
+    public function qemuRrddata($timeframe = null)
     {
         $optional['timeframe'] = !empty($timeframe) ? $timeframe : null;
-        return self::Request("/nodes/$node/qemu/$vmid/rrddata", $optional);
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/rrddata", $optional);
     }
 
     /**
@@ -73,9 +66,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuDelete($node, $vmid)
+    public function qemuDelete()
     {
-        return self::Request("/nodes/$node/qemu/$vmid", [], "DELETE");
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId", [], "DELETE");
     }
 
     /**
@@ -83,9 +76,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuConfig($node, $vmid)
+    public function qemuConfig()
     {
-        return self::Request("/nodes/$node/qemu/$vmid/config");
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/config");
     }
 
     /**
@@ -93,9 +86,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuSetConfig($node, $vmid, $data = [])
+    public function qemuSetConfig($data = [])
     {
-        return self::Request("/nodes/$node/qemu/$vmid/config", $data, 'PUT');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/config", $data, 'PUT');
     }
 
     /**
@@ -103,9 +96,9 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuCreateConfig($node, $vmid, $data = [])
+    public function qemuCreateConfig($data = [])
     {
-        return self::Request("/nodes/$node/qemu/$vmid/config", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/config", $data, 'POST');
     }
 
     /**
@@ -113,10 +106,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuResume($node, $vmid, $data = [])
+    public function qemuResume($data = [])
     {
         $fields = null;
-        return self::Request("/nodes/$node/qemu/$vmid/status/resume", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/resume", $data, 'POST');
     }
 
     /**
@@ -124,10 +117,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuReset($node, $vmid, $data = [])
+    public function qemuReset($data = [])
     {
         $fields = null;
-        return self::Request("/nodes/$node/qemu/$vmid/status/reset", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/reset", $data, 'POST');
     }
     
     /**
@@ -135,10 +128,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuShutdown($node, $vmid, $data = [])
+    public function qemuShutdown($data = [])
     {
         $fields = null;
-        return self::Request("/nodes/$node/qemu/$vmid/status/shutdown", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/shutdown", $data, 'POST');
     }
 
     /**
@@ -146,10 +139,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuStart($node, $vmid, $data = [])
+    public function qemuStart($data = [])
     {
         $fields = null;
-        return self::Request("/nodes/$node/qemu/$vmid/status/start", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/start", $data, 'POST');
     }
     
     /**
@@ -157,10 +150,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuStop($node, $vmid, $data = [])
+    public function qemuStop($data = [])
     {
         $fields = null;
-        return self::Request("/nodes/$node/qemu/$vmid/status/stop", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/stop", $data, 'POST');
     }
 
     /**
@@ -168,10 +161,10 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuSuspend($node, $vmid, $data = [])
+    public function qemuSuspend($data = [])
     {
         $fields = null;
-        return self::Request("/nodes/$node/qemu/$vmid/status/suspend", $data, 'POST');
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/suspend", $data, 'POST');
     }
 
     /**
@@ -179,20 +172,11 @@ class Qemu extends \SapiStudio\Proxmox\Request
      * 
      * @return
      */
-    public function qemuClone($node, $vmid, $data = [])
+    public function qemuClone($data = [])
     {
-        $fields = ['newid', 'name', 'target', 'full' => 1];
-        return self::Request("/nodes/$node/qemu/$vmid/clone", $data, 'POST');
-    }
-
-    /**
-     * Qemu::qemuCreate()
-     * 
-     * @return
-     */
-    public function qemuCreate($node, $data = [])
-    {
-        $fields = ['vmid', 'name', 'ostype' => 'win10', 'ide2' => 'local:iso/win_10_64bit_trial_90days.iso,media=cdrom', 'ide0' => 'local-lvm:32', 'sockets' => 2, 'cores', 'numa' => 0, 'memory', 'net0' => 'e1000,bridge=vmbr0,tag=70', 'scsihw' => 'virtio-scsi-pci'];
-        return self::Request("/nodes/$node/qemu", $data, "POST");
+        $fields = ['newid', 'name'];
+        $data['target'] = $this->nodeId;
+        $data['full']   = 1;
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/clone", $data, 'POST');
     }
 }
