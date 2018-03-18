@@ -23,7 +23,7 @@ class Handler
      */
     public static function __callStatic($name, $arguments)
     {
-        self::getInstance($arguments[0]);
+        self::configure($arguments[0]);
         $provider = __NAMESPACE__.'\Data\\'.$name;
         if (!class_exists($provider)){
             throw new \Exception('Could not find data provider '.$provider);
@@ -32,12 +32,12 @@ class Handler
     }
     
     /**
-     * Handler::getInstance()
+     * Handler::configure()
      * 
      * @param mixed $options
      * @return
      */
-    public static function getInstance($options = [])
+    public static function configure($options = [])
     {
         if (null === static::$instance)
             static::$instance = new static($options);
@@ -169,7 +169,6 @@ class Handler
             $loginUrl = $this->credentials->getApiUrl() . '/json/access/ticket';
             $response = $this->httpClient->post($loginUrl, [
                 'verify'        => false,
-                'debug'    => true,
                 'form_params'   => [
                     'username'      => $this->credentials->getUsername(),
                     'password'      => $this->credentials->getPassword(),
@@ -179,9 +178,8 @@ class Handler
             $response = json_decode($response->getBody()->getContents());
             $cache->set('token',$response,3600);
         }
-        if (!$response->data){
+        if (!$response->data)
             throw new \Exception('Can not login using credentials: ' . $this->credentials);
-        }
         return new Auth\Token($response->data->CSRFPreventionToken,$response->data->ticket,$response->data->username);
     }
 
@@ -214,7 +212,7 @@ class Handler
      * 
      * @return
      */
-    public function setResponseType($responseType = 'array')
+    public function setResponseType($responseType = 'object')
     {
         $supportedFormats = ['json', 'html', 'extjs', 'text', 'png'];
         if (in_array($responseType, $supportedFormats)) {
@@ -227,7 +225,6 @@ class Handler
                     $this->responseType = 'png';
                     break;
                 case 'object':
-                case 'array':
                     $this->responseType = 'json';
                     $this->fakeType     = $responseType;
                     break;
@@ -267,12 +264,18 @@ class Handler
     {
         return $this->get('/version');
     }
-
-
-
-
     
-    
+    /**
+     * Handler::listNodes()
+     * 
+     * @return
+     */
+    public function listNodes()
+    {
+        return $this->get("/nodes");
+    }
+
+
     /**
      * Handler::get()
      * 
