@@ -5,6 +5,7 @@ class Handler
 {
     const AUTH_COOKIE       = 'PVEAuthCookie';
     const AUTH_TOKEN        = 'CSRFPreventionToken';
+    const AUTH_VALIDITY     = 3600;
     const GLOBALIZE_NAME    = 'CSRFPreventionToken';
     
     private static $requestCookies;
@@ -13,6 +14,7 @@ class Handler
     private $fakeType;
     private $authToken;
     private static $instance;
+    private static $cacheHash;
     
     /**
      * Handler::__callStatic()
@@ -54,6 +56,7 @@ class Handler
         $this->setHttpClient($httpClient);
         $this->setCredentials($credentials);
         $this->setResponseType($responseType);
+        self::$cacheHash = md5(realpath(dirname(__FILE__)));
     }
     
     /**
@@ -164,7 +167,7 @@ class Handler
     public function login()
     {
         $cache          = new \Symfony\Component\Cache\Simple\FilesystemCache();
-        $response       = $cache->get('token');
+        $response       = $cache->get(self::$cacheHash);
         if (!$response->data){
             $loginUrl = $this->credentials->getApiUrl() . '/json/access/ticket';
             $response = $this->httpClient->post($loginUrl, [
@@ -176,7 +179,7 @@ class Handler
                 ],
             ]);
             $response = json_decode($response->getBody()->getContents());
-            $cache->set('token',$response,3600);
+            $cache->set(self::$cacheHash,$response,SELF::AUTH_VALIDITY);
         }
         if (!$response->data)
             throw new \Exception('Can not login using credentials: ' . $this->credentials);
