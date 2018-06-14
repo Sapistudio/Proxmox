@@ -6,7 +6,7 @@ class Handler
     const AUTH_COOKIE       = 'PVEAuthCookie';
     const AUTH_TOKEN        = 'CSRFPreventionToken';
     const AUTH_VALIDITY     = 3600;
-    const GLOBALIZE_NAME    = 'CSRFPreventionToken';
+    const GLOBALIZE_NAME    = 'HandlerApiRequest';
     
     private static $requestCookies;
     private $credentials;
