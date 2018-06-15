@@ -51,12 +51,12 @@ class Handler
      * 
      * @return
      */
-    public function __construct($credentials,$responseType = 'object',$httpClient = null){
+    public function __construct($credentials,$responseType = 'object'){
+        self::$cacheHash = md5(realpath(dirname(__FILE__)));                
         $this->globalise();
-        $this->setHttpClient($httpClient);
+        $this->setHttpClient();
         $this->setCredentials($credentials);
         $this->setResponseType($responseType);
-        self::$cacheHash = md5(realpath(dirname(__FILE__)));
     }
     
     /**
@@ -115,15 +115,12 @@ class Handler
      * @return
      */
     private function buildHttpOptions($options = []){
-        if(!self::$requestCookies)
-            self::$requestCookies = \GuzzleHttp\Cookie\CookieJar::fromArray([self::AUTH_COOKIE=>$this->authToken->getTicket()],$this->credentials->getHostname());
+        $this->httpClient->setRequestCookiesFromArray([self::AUTH_COOKIE=>$this->authToken->getTicket()],$this->credentials->getHostname());
         return array_merge([
             'verify'        => false,
             'exceptions'    => false,
-            'cookies'       => self::$requestCookies,
             'headers'       => [self::AUTH_TOKEN => $this->authToken->getCsrf()]
         ],$options);
-        return \GuzzleHttp\Cookie\CookieJar::fromArray([self::AUTH_COOKIE=>$this->authToken->getTicket()],$this->credentials->getHostname());
     }
     
     /**
@@ -156,7 +153,7 @@ class Handler
      */
     public function setHttpClient($httpClient = null)
     {
-        $this->httpClient = $httpClient ?: new \GuzzleHttp\Client();
+        $this->httpClient = \SapiStudio\Http\Browser\CurlClient::make();
     }
 
     /**
@@ -166,11 +163,7 @@ class Handler
      */
     public function login()
     {
-        $cache          = new \Symfony\Component\Cache\Simple\FilesystemCache();
-        $response       = $cache->get(self::$cacheHash);
-        if (!$response->data){
-            $loginUrl = $this->credentials->getApiUrl() . '/json/access/ticket';
-            $response = $this->httpClient->post($loginUrl, [
+        $response = $this->httpClient->cacheRequest(self::$cacheHash)->post($this->credentials->getApiUrl() . '/json/access/ticket', [
                 'verify'        => false,
                 'form_params'   => [
                     'username'      => $this->credentials->getUsername(),
@@ -178,9 +171,7 @@ class Handler
                     'realm'         => $this->credentials->getRealm(),
                 ],
             ]);
-            $response = json_decode($response->getBody()->getContents());
-            $cache->set(self::$cacheHash,$response,SELF::AUTH_VALIDITY);
-        }
+        $response = json_decode($response);                
         if (!$response->data)
             throw new \Exception('Can not login using credentials: ' . $this->credentials);
         return new Auth\Token($response->data->CSRFPreventionToken,$response->data->ticket,$response->data->username);
