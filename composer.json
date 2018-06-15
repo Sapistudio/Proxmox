@@ -4,8 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.6",
-        "symfony/cache": "^3.4",
-        "guzzlehttp/guzzle": "^6.2"
+        "sapistudio/http": "^3.3"
     },
     "autoload": {
          "psr-4": { "SapiStudio\\Proxmox\\": "src/" }
