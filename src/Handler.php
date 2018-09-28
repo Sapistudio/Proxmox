@@ -153,7 +153,7 @@ class Handler
      */
     public function setHttpClient($httpClient = null)
     {
-        $this->httpClient = \SapiStudio\Http\Browser\CurlClient::make();
+        $this->httpClient = \SapiStudio\Http\Browser\StreamClient::make();
     }
 
     /**
