@@ -7,8 +7,6 @@ class Nodes extends \SapiStudio\Proxmox\Request
 {
     /**
      * Nodes::listNodeQemus()
-     * 
-     * @return
      */
     public function listNodeQemus($node,$applyModification=null)
     {
@@ -24,25 +22,17 @@ class Nodes extends \SapiStudio\Proxmox\Request
         return $return;
     }
 
-
     /**
      * Nodes::qemuCreate()
-     * 
-     * @return
      */
     public function qemuCreate($data = [])
     {
-        $fields = ['vmid', 'name', 'ostype' => 'win10', 'ide2' =>
-            'local:iso/win_10_64bit_trial_90days.iso,media=cdrom', 'ide0' => 'local-lvm:32',
-            'sockets' => 2, 'cores', 'numa' => 0, 'memory', 'net0' =>
-            'e1000,bridge=vmbr0,tag=70', 'scsihw' => 'virtio-scsi-pci'];
+        $fields = ['vmid', 'name', 'ostype' => 'win10', 'ide2' => 'local:iso/win_10_64bit_trial_90days.iso,media=cdrom', 'ide0' => 'local-lvm:32', 'sockets' => 2, 'cores', 'numa' => 0, 'memory', 'net0' => 'e1000,bridge=vmbr0,tag=70', 'scsihw' => 'virtio-scsi-pci'];
         return self::Request("/nodes/$node/qemu", $data, "POST");
     }
 
     /**
      * Nodes::Tasks()
-     * 
-     * @return
      */
     public function Tasks($node, $errors = null, $limit = null, $vmid = null, $start = null)
     {
@@ -55,8 +45,6 @@ class Nodes extends \SapiStudio\Proxmox\Request
 
     /**
      * Nodes::tasksUpid()
-     * 
-     * @return
      */
     public function tasksUpid($node, $upid)
     {
@@ -65,8 +53,6 @@ class Nodes extends \SapiStudio\Proxmox\Request
 
     /**
      * Nodes::tasksStop()
-     * 
-     * @return
      */
     public function tasksStop($node, $upid)
     {
@@ -75,8 +61,6 @@ class Nodes extends \SapiStudio\Proxmox\Request
 
     /**
      * Nodes::tasksLog()
-     * 
-     * @return
      */
     public function tasksLog($node, $upid, $limit = null, $start = null)
     {
@@ -87,8 +71,6 @@ class Nodes extends \SapiStudio\Proxmox\Request
 
     /**
      * Nodes::tasksStatus()
-     * 
-     * @return
      */
     public function tasksStatus($node, $upid)
     {

@@ -136,13 +136,13 @@ class Handler
                 return 'data:image/png;base64,' . $base64;
                 break;
             case 'object':
-                return json_decode($response->getBody()->getContents());
+                return json_decode($response->getBody());
                 break;
             case 'array':
-                return json_decode($response->getBody()->getContents(),true);
+                return json_decode($response->getBody(),true);
                 break;
             default:
-                return $response->getBody()->getContents();
+                return $response->getBody();
         }
     }
 

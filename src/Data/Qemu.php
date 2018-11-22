@@ -22,8 +22,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
     
     /**
      * Qemu::qemuVmid()
-     * 
-     * @return
      */
     public function qemuVmid()
     {
@@ -32,8 +30,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuStatus()
-     * 
-     * @return
      */
     public function qemuStatus()
     {
@@ -42,8 +38,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuCurrent()
-     * 
-     * @return
      */
     public function qemuCurrent()
     {
@@ -52,8 +46,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuRrddata()
-     * 
-     * @return
      */
     public function qemuRrddata($timeframe = null)
     {
@@ -63,8 +55,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuDelete()
-     * 
-     * @return
      */
     public function qemuDelete()
     {
@@ -73,8 +63,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuConfig()
-     * 
-     * @return
      */
     public function qemuConfig()
     {
@@ -83,8 +71,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuSetConfig()
-     * 
-     * @return
      */
     public function qemuSetConfig($data = [])
     {
@@ -93,8 +79,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuCreateConfig()
-     * 
-     * @return
      */
     public function qemuCreateConfig($data = [])
     {
@@ -103,8 +87,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuResume()
-     * 
-     * @return
      */
     public function qemuResume($data = [])
     {
@@ -114,8 +96,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuReset()
-     * 
-     * @return
      */
     public function qemuReset($data = [])
     {
@@ -125,8 +105,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
     
     /**
      * Qemu::qemuShutdown()
-     * 
-     * @return
      */
     public function qemuShutdown($data = [])
     {
@@ -136,8 +114,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuStart()
-     * 
-     * @return
      */
     public function qemuStart($data = [])
     {
@@ -147,8 +123,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
     
     /**
      * Qemu::qemuStop()
-     * 
-     * @return
      */
     public function qemuStop($data = [])
     {
@@ -158,8 +132,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuSuspend()
-     * 
-     * @return
      */
     public function qemuSuspend($data = [])
     {
@@ -169,8 +141,6 @@ class Qemu extends \SapiStudio\Proxmox\Request
 
     /**
      * Qemu::qemuClone()
-     * 
-     * @return
      */
     public function qemuClone($data = [])
     {
