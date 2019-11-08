@@ -15,17 +15,17 @@ class Handler
     private $authToken;
     private static $instance;
     private static $cacheHash;
+    private $nodeHandler;
     
-    /**
-     * Handler::__callStatic()
-     * 
-     * @param mixed $name
-     * @param mixed $arguments
-     * @return
-     */
+    /** Handler::__callStatic() */
     public static function __callStatic($name, $arguments)
     {
         self::configure($arguments[0]);
+        
+        if(method_exists($this->nodeHandler,$name) ){
+            throw new \Exception('Could not find data provider '.$provider);
+        }
+        
         $provider = __NAMESPACE__.'\Data\\'.$name;
         if (!class_exists($provider)){
             throw new \Exception('Could not find data provider '.$provider);
@@ -33,12 +33,16 @@ class Handler
         return new $provider;
     }
     
-    /**
-     * Handler::configure()
-     * 
-     * @param mixed $options
-     * @return
-     */
+    /** Handler::__call() */
+    public function __call($name, $arguments)
+    {
+        if(!method_exists($this->nodeHandler,$name) ){
+            throw new \Exception('Could not find data method '.$name);
+        }
+        return $this->nodeHandler->$name(...$arguments);
+    }
+    
+    /** Handler::configure()*/
     public static function configure($options = [])
     {
         if (null === static::$instance)
@@ -46,11 +50,13 @@ class Handler
         return static::$instance;
     }
     
-    /**
-     * Handler::__construct()
-     * 
-     * @return
-     */
+    /** Handler::setNodeId()*/
+    public function setNodeId($nodeId){
+        $this->nodeHandler = new Data\Nodes($nodeId);
+        return $this;
+    }
+    
+    /** Handler::__construct()*/
     public function __construct($credentials,$responseType = 'object'){
         self::$cacheHash = md5(realpath(dirname(__FILE__)));                
         $this->globalise();
@@ -59,12 +65,7 @@ class Handler
         $this->setResponseType($responseType);
     }
     
-    /**
-     * Handler::globalise()
-     * 
-     * @param mixed $alias
-     * @return void
-     */
+    /** Handler::globalise()*/
     public function globalise($alias = self::GLOBALIZE_NAME)
     {
         if (substr($alias, 0, 1) != '\\')
@@ -75,11 +76,7 @@ class Handler
             self::$instance = $this;
     }
     
-    /**
-     * Handler::requestResource()
-     * 
-     * @return
-     */
+    /** Handler::requestResource()*/
     public function requestResource($actionPath, $params = [], $method = 'GET')
     {
         if (!is_array($params))
@@ -109,11 +106,7 @@ class Handler
         return $this->processHttpResponse($response);
     }
     
-    /**
-     * Handler::buildHttpOptions()
-     * 
-     * @return
-     */
+    /** Handler::buildHttpOptions()*/
     private function buildHttpOptions($options = []){
         $this->httpClient->setRequestCookiesFromArray([self::AUTH_COOKIE=>$this->authToken->getTicket()],$this->credentials->getHostname());
         return array_merge([
@@ -123,11 +116,7 @@ class Handler
         ],$options);
     }
     
-    /**
-     * Handler::processHttpResponse()
-     * 
-     * @return
-     */
+    /** Handler::processHttpResponse()*/
     private function processHttpResponse($response)
     {
         switch ($this->fakeType) {
@@ -146,21 +135,13 @@ class Handler
         }
     }
 
-    /**
-     * Handler::setHttpClient()
-     * 
-     * @return
-     */
+    /** Handler::setHttpClient()*/
     public function setHttpClient($httpClient = null)
     {
         $this->httpClient = \SapiStudio\Http\Browser\StreamClient::make();
     }
 
-    /**
-     * Handler::login()
-     * 
-     * @return
-     */
+    /** Handler::login()*/
     public function login()
     {
         $response = $this->httpClient->cacheRequest(self::$cacheHash)->post($this->credentials->getApiUrl() . '/json/access/ticket', [
@@ -177,21 +158,13 @@ class Handler
         return new Auth\Token($response->data->CSRFPreventionToken,$response->data->ticket,$response->data->username);
     }
 
-    /**
-     * Handler::getCredentials()
-     * 
-     * @return
-     */
+    /** Handler::getCredentials()*/
     public function getCredentials()
     {
         return $this->credentials;
     }
 
-    /**
-     * Handler::setCredentials()
-     * 
-     * @return
-     */
+    /** Handler::setCredentials()*/
     public function setCredentials($credentials)
     {
         if (!$credentials instanceof Auth\Credentials) {
@@ -201,11 +174,7 @@ class Handler
         $this->authToken = $this->login();
     }
 
-    /**
-     * Handler::setResponseType()
-     * 
-     * @return
-     */
+    /** Handler::setResponseType()*/
     public function setResponseType($responseType = 'object')
     {
         $supportedFormats = ['json', 'html', 'extjs', 'text', 'png'];
@@ -229,83 +198,57 @@ class Handler
         }
     }
 
-    /**
-     * Handler::getResponseType()
-     * 
-     * @return
-     */
+    /** Handler::getResponseType()*/
     public function getResponseType()
     {
         return $this->fakeType ?: $this->responseType;
     }
 
-    /**
-     * Handler::getApiUrl()
-     * 
-     * @return
-     */
+    /** Handler::getApiUrl()*/
     public function getApiUrl()
     {
         return $this->credentials->getApiUrl() . '/' . $this->responseType;
     }
 
-    /**
-     * Handler::getVersion()
-     * 
-     * @return
-     */
+    /** Handler::getVersion()*/
     public function getVersion()
     {
-        return $this->get('/version');
+        return $this->getRequest('/version');
     }
     
-    /**
-     * Handler::listNodes()
-     * 
-     * @return
-     */
+    /** Handler::listNodes()*/
     public function listNodes()
     {
-        return $this->get("/nodes");
+        return $this->getRequest("/nodes");
     }
-
-
-    /**
-     * Handler::get()
-     * 
-     * @return
-     */
-    public function get($actionPath, $params = [])
+    
+    /** Handler::listResources()*/
+    public function listResources()
+    {
+        return $this->getRequest("/cluster/resources");
+    }
+    
+    /** Handler::getRequest() */
+    public function getRequest($actionPath, $params = [])
     {
         return $this->requestResource($actionPath, $params);
     }
 
-    /**
-     * Handler::set()
-     * 
-     * @return
-     */
-    public function set($actionPath, $params = [])
+    /** Handler::setRequest()*/
+    public function setRequest($actionPath, $params = [])
     {
         return $this->requestResource($actionPath, $params, 'PUT');
     }
 
     /**
-     * Handler::create()
-     * 
-     * @return
-     */
-    public function create($actionPath, $params = [])
+     * Handler::postRequest()*/
+    public function postRequest($actionPath, $params = [])
     {
         return $this->requestResource($actionPath, $params, 'POST');
     }
 
-    /**
-     * Handler::delete()
-     * 
-     * @return
-     */
-    public function delete($actionPath, $params = [])
+    /** Handler::deleteRequest()*/
+    public function deleteRequest($actionPath, $params = [])
     {
         return $this->requestResource($actionPath, $params, 'DELETE');
     }
