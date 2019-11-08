@@ -50,6 +50,12 @@ $proxmox = Handler::Nodes($credentials);
 $allNodes = $proxmox->listNodes();
 
 print_r($allNodes);
+
+// set node id
+$proxmox->setNodeId($noedName);
+//and access nodeIddata
+$proxmox->listNodeQemus();
+
 ```
 
 
