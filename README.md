@@ -50,15 +50,7 @@ $proxmox = Handler::Nodes($credentials);
 $allNodes = $proxmox->listNodes();
 
 print_r($allNodes);
-
-// set node id
-$proxmox->setNodeId($noedName);
-//and access nodeIddata
-$proxmox->listNodeQemus();
-
 ```
-
-
 Sample output:
 
 ```php
@@ -84,7 +76,17 @@ Array
         )
 
 )
+
+
+// set node id
+$proxmox->setNodeId($noedName);
+//and access nodeIddata
+$proxmox->listNodeQemus();
+
 ```
+
+
+
 
 License
 -------
