@@ -23,12 +23,18 @@ class Nodes extends \SapiStudio\Proxmox\Request
         if(!$qemus || !isset($qemus->data))
             return false;
         foreach($qemus->data as $index=>$vmData){
-            $object = new Qemu($this->nodeId,$vmData->vmid);
+            $object = $this->getQemu($vmData->vmid);
             if($applyModification)
                 $object->$applyModification();
             $return[$index] = $object;
         }
         return $return;
+    }
+    
+    /** Nodes::getQemu()*/
+    public function getQemu($qemuId = null)
+    {
+        return new Qemu($this->nodeId,$qemuId);
     }
 
     /** Nodes::qemuCreate()*/
