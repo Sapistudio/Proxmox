@@ -21,11 +21,9 @@ class Handler
     public static function __callStatic($name, $arguments)
     {
         self::configure($arguments[0]);
-        
         if(method_exists($this->nodeHandler,$name) ){
             throw new \Exception('Could not find data provider '.$provider);
         }
-        
         $provider = __NAMESPACE__.'\Data\\'.$name;
         if (!class_exists($provider)){
             throw new \Exception('Could not find data provider '.$provider);
@@ -61,8 +59,8 @@ class Handler
         self::$cacheHash = md5(realpath(dirname(__FILE__)));                
         $this->globalise();
         $this->setHttpClient();
-        $this->setCredentials($credentials);
         $this->setResponseType($responseType);
+        $this->setCredentials($credentials);
     }
     
     /** Handler::globalise()*/
@@ -144,7 +142,7 @@ class Handler
     /** Handler::login()*/
     public function login()
     {
-        $response = $this->httpClient->cacheRequest(self::$cacheHash)->post($this->credentials->getApiUrl() . '/json/access/ticket', [
+        $response = $this->httpClient->cacheRequest(self::$cacheHash)->post($this->getApiUrl() . '/access/ticket', [
                 'verify'        => false,
                 'form_params'   => [
                     'username'      => $this->credentials->getUsername(),
@@ -152,7 +150,7 @@ class Handler
                     'realm'         => $this->credentials->getRealm(),
                 ],
             ]);
-        $response = json_decode($response);                
+        $response = json_decode($response->getBody());
         if (!$response->data)
             throw new \Exception('Can not login using credentials: ' . $this->credentials);
         return new Auth\Token($response->data->CSRFPreventionToken,$response->data->ticket,$response->data->username);
@@ -219,7 +217,8 @@ class Handler
     /** Handler::listNodes()*/
     public function listNodes()
     {
-        return $this->getRequest("/nodes");
+        $nodes = $this->getRequest("/nodes");
+        return (isset($nodes->data)) ? $nodes->data : false;
     }
     
     /** Handler::listResources()*/
