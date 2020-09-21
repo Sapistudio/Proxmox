@@ -8,11 +8,7 @@ class Token
     private $ticket;
     private $username;
 
-    /**
-     * Token::__construct()
-     * 
-     * @return
-     */
+    /** Token::__construct()*/
     public function __construct($csrf, $ticket, $username)
     {
         $this->timestamp            = time();
@@ -21,41 +17,25 @@ class Token
         $this->username             = $username;
     }
 
-    /**
-     * Token::getCsrf()
-     * 
-     * @return
-     */
+    /** Token::getCsrf()*/
     public function getCsrf()
     {
         return $this->CSRFPreventionToken;
     }
 
-    /**
-     * Token::getTicket()
-     * 
-     * @return
-     */
+    /** Token::getTicket()*/
     public function getTicket()
     {
         return $this->ticket;
     }
 
-    /**
-     * Token::getUsername()
-     * 
-     * @return
-     */
+    /**  Token::getUsername()  */
     public function getUsername()
     {
         return $this->username;
     }
 
-    /**
-     * Token::getTimestamp()
-     * 
-     * @return
-     */
+    /** Token::getTimestamp()*/
     public function getTimestamp()
     {
         return $this->timestamp;
