@@ -75,45 +75,63 @@ class Qemu extends \SapiStudio\Proxmox\Request
     /** Qemu::qemuResume()*/
     public function qemuResume($data = [])
     {
-        $fields = null;
         return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/resume", $data, 'POST');
     }
 
     /** Qemu::qemuReset()*/
     public function qemuReset($data = [])
     {
-        $fields = null;
         return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/reset", $data, 'POST');
     }
     
     /** Qemu::qemuShutdown()*/
     public function qemuShutdown($data = [])
     {
-        $fields = null;
         return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/shutdown", $data, 'POST');
     }
 
     /** Qemu::qemuStart()*/
     public function qemuStart($data = [])
     {
-        $fields = null;
         return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/start", $data, 'POST');
     }
     
     /** Qemu::qemuStop()*/
     public function qemuStop($data = [])
     {
-        $fields = null;
         return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/stop", $data, 'POST');
     }
 
     /** Qemu::qemuSuspend()*/
     public function qemuSuspend($data = [])
     {
-        $fields = null;
         return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/status/suspend", $data, 'POST');
     }
-
+    
+    /** Qemu::qemuAgentExec()*/
+    public function qemuAgentExec($data = [])
+    {
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/agent/exec", $data, 'POST');
+    }
+    
+    /** Qemu::qemuAgentWriteFile()*/
+    public function qemuAgentWriteFile($data = [])
+    {
+        $data['content'] = file_get_contents($data['content']);
+        return self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/agent/file-write", $data, 'POST');
+    }
+    
+    /** Qemu::qemuAgentGetIpAddr()*/
+    public function qemuAgentGetIpAddr()
+    {
+        $interfaces = self::Request("/nodes/$this->nodeId/qemu/$this->virtualMachineId/agent/network-get-interfaces");
+        if(!$interfaces->data->result)
+            return false;
+        $data = json_decode(json_encode($interfaces->data->result[0]),'true')['ip-addresses'];
+        return array_column($data,'ip-address','ip-address-type');
+    }
+    
+    
     /** Qemu::qemuClone()*/
     public function qemuClone($data = [])
     {
