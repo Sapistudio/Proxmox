@@ -10,11 +10,7 @@ class Credentials
     protected static $realm;
     protected static $port;
     
-    /**
-     * Credentials::__construct()
-     * 
-     * @return
-     */
+    /** Credentials::__construct() */
     public function __construct($credentials = [])
     {
         $check          = false;
@@ -28,71 +24,43 @@ class Credentials
         }
     }
 
-    /**
-     * Credentials::__toString()
-     * 
-     * @return
-     */
+    /** Credentials::__toString() */
     public function __toString()
     {
         return sprintf('[Host: %s:%s], [Username: %s@%s].',self::$hostname,self::$port,self::$username,self::$realm);
     }
 
-    /**
-     * Credentials::getApiUrl()
-     * 
-     * @return
-     */
+    /** Credentials::getApiUrl()*/
     public function getApiUrl()
     {
         return 'https://'.self::$hostname.':'.self::$port.'/api2';
     }
 
-    /**
-     * Credentials::getHostname()
-     * 
-     * @return
-     */
+    /** Credentials::getHostname()*/
     public function getHostname()
     {
         return self::$hostname;
     }
 
-    /**
-     * Credentials::getUsername()
-     * 
-     * @return
-     */
+    /** Credentials::getUsername()*/
     public function getUsername()
     {
         return self::$username;
     }
 
-    /**
-     * Credentials::getPassword()
-     * 
-     * @return
-     */
+    /** Credentials::getPassword()*/
     public function getPassword()
     {
         return self::$password;
     }
 
-    /**
-     * Credentials::getRealm()
-     * 
-     * @return
-     */
+    /** Credentials::getRealm()*/
     public function getRealm()
     {
         return self::$realm;
     }
 
-    /**
-     * Credentials::getPort()
-     * 
-     * @return
-     */
+    /** Credentials::getPort() */
     public function getPort()
     {
         return self::$port;
