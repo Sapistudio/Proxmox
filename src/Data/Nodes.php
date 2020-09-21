@@ -17,7 +17,7 @@ class Nodes extends \SapiStudio\Proxmox\Request
     }
     
     /** Nodes::listNodeQemus()*/
-    public function listNodeQemus($applyModification=null)
+    public function listNodeQemus($applyModification = null)
     {
         $qemus = self::Request("/nodes/$this->nodeId/qemu");
         if(!$qemus || !isset($qemus->data))
